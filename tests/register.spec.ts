@@ -1,0 +1,35 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await page.getByRole('banner').getByRole('link', { name: 'Zarejestruj się' }).click();
+  await page.getByLabel('Login:').click();
+  await page.getByLabel('Login:').fill('test');
+  await page.getByLabel('Email:').click();
+  await page.getByLabel('Email:').fill('test');
+  await page.getByText('Login: Email: Hasło:').click();
+  await page.getByLabel('Hasło:').click();
+  await page.getByLabel('Hasło:').fill('test');
+  await page.getByRole('button', { name: 'Zarejestruj' }).click();
+  await page.getByLabel('Email:').click();
+  await page.getByLabel('Email:').fill('test@op.pl');
+  await page.getByRole('button', { name: 'Zarejestruj' }).click();
+  await expect(page.locator('#register-error-wrapper')).toContainText('Ta nazwa użytkownika jest już zajęta.');
+  await page.getByLabel('Email:').click();
+  await page.getByLabel('Login:').click();
+  await page.getByLabel('Login:').fill('test123');
+  await page.getByRole('button', { name: 'Zarejestruj' }).click();
+  await expect(page.locator('#register-error-wrapper')).toContainText('Hasło nie spełnia wymogów');
+  await page.getByLabel('Hasło:').click();
+  await page.getByLabel('Hasło:').fill('Haslo123');
+  await page.getByLabel('Email:').click();
+  await page.getByLabel('Email:').fill('test@test.pl');
+  await page.getByRole('button', { name: 'Zarejestruj' }).click();
+  await page.getByText('Konto o podanym mailu').click();
+  await expect(page.locator('#register-error-wrapper')).toContainText('Konto o podanym mailu istnieje już w serwisie.');
+  await page.getByLabel('Email:').click();
+  await page.getByLabel('Email:').fill('test@te.com');
+  await page.getByRole('button', { name: 'Zarejestruj' }).click();
+  await expect(page.getByRole('paragraph')).toContainText('Zostałeś zarejstrowany');
+  await page.getByRole('link', { name: 'Strona główna' }).click();
+});
